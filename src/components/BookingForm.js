@@ -1,110 +1,179 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-const defaultTimes = ['17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
+function BookingForm({ availableTimes = [], dispatchAvailableTimes, submitForm }) {
+  const [formData, setFormData] = useState({
+    date: '',
+    time: '',
+    guests: '1',
+    occasion: 'Birthday',
+  });
 
-function BookingForm({
-  availableTimes = defaultTimes,
-  dispatchAvailableTimes,
-  submitForm,
-}) {
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState(defaultTimes[0]);
-  const [guests, setGuests] = useState(1);
-  const [occasion, setOccasion] = useState('Birthday');
-  const [submitError, setSubmitError] = useState('');
+  const [formErrors, setFormErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(false);
 
-  const isFormValid =
-    date.trim() !== '' && guests >= 1 && guests <= 10 && time.trim() !== '';
+
+  const validateForm = useCallback(() => {
+    const errors = {};
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const selectedDate = new Date(formData.date);
+    selectedDate.setHours(0, 0, 0, 0);
+
+
+    if (!formData.date) {
+      errors.date = 'Date is required';
+    } else if (selectedDate < today) {
+      errors.date = 'Date cannot be in the past';
+    }
+
+
+    if (!formData.time) {
+      errors.time = 'Time is required';
+    } else if (!availableTimes.includes(formData.time)) {
+      errors.time = 'Please select an available time';
+    }
+
+
+    const guestsNum = Number(formData.guests);
+    if (guestsNum < 1 || guestsNum > 10) {
+      errors.guests = 'Number of guests must be between 1 and 10';
+    }
+
+
+    if (!formData.occasion) {
+      errors.occasion = 'Please select an occasion';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [formData, availableTimes]);
+
+  useEffect(() => {
+    setIsFormValid(validateForm());
+  }, [validateForm]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === 'date' && dispatchAvailableTimes) {
+      dispatchAvailableTimes(value);
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitError('');
-    const formData = { date, time, guests, occasion };
-    if (submitForm) {
-      const success = submitForm(formData);
-      if (!success) {
-        setSubmitError('Reservation could not be submitted. Please try again.');
-      }
-    } else if (
-      typeof window !== 'undefined' &&
-      window.submitAPI &&
-      window.submitAPI(formData)
-    ) {
-      console.log('Reservation submitted:', formData);
+    if (isFormValid && submitForm) {
+      submitForm(formData);
     }
   };
 
   return (
-    <form
-      style={{ display: 'grid', maxWidth: '200px', gap: '20px' }}
-      onSubmit={handleSubmit}
-      aria-label="Table reservation form"
-    >
-      <label htmlFor="res-date">Choose date</label>
-      {!date.trim() && (
-        <span role="status" style={{ fontSize: '0.85em', color: '#666' }}>
-          Please choose a date to continue.
-        </span>
-      )}
-      <input
-        type="date"
-        id="res-date"
-        value={date}
-        required
-        onChange={(e) => {
-          const newDate = e.target.value;
-          setDate(newDate);
-          if (dispatchAvailableTimes) dispatchAvailableTimes(newDate);
-        }}
-      />
-      <label htmlFor="res-time">Choose time</label>
-      <select
-        id="res-time"
-        value={time}
-        required
-        onChange={(e) => setTime(e.target.value)}
-      >
-        {availableTimes.map((t) => (
-          <option key={t} value={t}>
-            {t}
-          </option>
-        ))}
-      </select>
-      <label htmlFor="guests">Number of guests</label>
-      <input
-        type="number"
-        placeholder="1"
-        min="1"
-        max="10"
-        id="guests"
-        value={guests}
-        required
-        aria-label="Number of guests"
-        onChange={(e) => {
-          const v = Number(e.target.value);
-          if (!Number.isNaN(v)) setGuests(Math.min(10, Math.max(1, v)));
-        }}
-      />
-      <label htmlFor="occasion">Occasion</label>
-      <select
-        id="occasion"
-        value={occasion}
-        onChange={(e) => setOccasion(e.target.value)}
-      >
-        <option value="Birthday">Birthday</option>
-        <option value="Anniversary">Anniversary</option>
-      </select>
-      {submitError && (
-        <p role="alert" style={{ color: '#c00', fontSize: '0.9em', margin: 0 }}>
-          {submitError}
-        </p>
-      )}
-      <input
+    <form className="booking-form" onSubmit={handleSubmit} noValidate aria-label="Table reservation form">
+      <div className="form-group">
+        <label htmlFor="res-date">Choose date</label>
+        <input
+          type="date"
+          id="res-date"
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          required
+          min={new Date().toISOString().split('T')[0]}
+          aria-invalid={!!formErrors.date}
+          aria-describedby="date-error"
+        />
+        {formErrors.date && (
+          <span id="date-error" className="form-error" role="alert">
+            {formErrors.date}
+          </span>
+        )}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="res-time">Choose time</label>
+        <select
+          id="res-time"
+          name="time"
+          value={formData.time}
+          onChange={handleChange}
+          required
+          aria-invalid={!!formErrors.time}
+          aria-describedby="time-error"
+        >
+          <option value="">Select a time</option>
+          {availableTimes.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+        {formErrors.time && (
+          <span id="time-error" className="form-error" role="alert">
+            {formErrors.time}
+          </span>
+        )}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="guests">Number of guests</label>
+        <input
+          type="number"
+          placeholder="1"
+          min="1"
+          max="10"
+          id="guests"
+          name="guests"
+          value={formData.guests}
+          onChange={handleChange}
+          required
+          aria-label="Number of guests"
+          aria-invalid={!!formErrors.guests}
+          aria-describedby="guests-error"
+        />
+        {formErrors.guests && (
+          <span id="guests-error" className="form-error" role="alert">
+            {formErrors.guests}
+          </span>
+        )}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="occasion">Occasion</label>
+        <select
+          id="occasion"
+          name="occasion"
+          value={formData.occasion}
+          onChange={handleChange}
+          required
+          aria-invalid={!!formErrors.occasion}
+          aria-describedby="occasion-error"
+        >
+          <option value="Birthday">Birthday</option>
+          <option value="Anniversary">Anniversary</option>
+          <option value="Engagement">Engagement</option>
+          <option value="Other">Other</option>
+        </select>
+        {formErrors.occasion && (
+          <span id="occasion-error" className="form-error" role="alert">
+            {formErrors.occasion}
+          </span>
+        )}
+      </div>
+
+      <button
         type="submit"
-        value="Make Your reservation"
+        className="btn-primary"
         disabled={!isFormValid}
-        aria-label="Submit reservation"
-      />
+        aria-label="Make Your Reservation"
+      >
+        Make Your Reservation
+      </button>
     </form>
   );
 }

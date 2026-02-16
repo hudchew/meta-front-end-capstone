@@ -1,37 +1,619 @@
+
+:root {
+  --color-bg-header: #1a1a1a;
+  --color-hero-bg: #334a42;
+  --color-accent: #f4ce14;
+  --color-text: #333;
+  --color-text-muted: #666;
+  --color-footer-bg: #edefee;
+}
+
+
 .App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.App-header {
+  background-color: white;
+  color: var(--color-text);
+  padding: 12px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+
+.header-hamburger {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px;
+  display: block; /* Visible on mobile */
+  margin-right: 16px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  flex-grow: 1; /* Allow logo to take updated space if needed, or just be flex */
+  justify-content: center; /* Center logo on mobile */
+}
+
+
+.header-logo {
+  justify-content: center; 
+  margin-right: 40px; /* Balance the hamburger width to center visually if needed */
+}
+
+.header-logo a {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo img {
+  height: 40px; /* Slightly smaller on mobile */
+}
+
+
+.header-nav-desktop {
+  display: none;
+}
+
+
+@media (min-width: 768px) {
+  .App-header {
+    padding: 16px 24px;
+  }
+
+  .header-hamburger {
+    display: none;
+  }
+
+  .header-logo {
+    justify-content: flex-start; /* Logo Left */
+    margin-right: 0;
+    flex-grow: 0;
+  }
+
+  .header-logo img {
+    height: 50px;
+  }
+
+  .header-nav-desktop {
+    display: block;
+  }
+
+  .header-nav-desktop ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 32px;
+  }
+
+  .header-nav-desktop a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: color 0.2s;
+  }
+
+  .header-nav-desktop a:hover {
+    color: var(--color-accent);
+  }
+}
+
+
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  backdrop-filter: blur(2px);
+}
+
+
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background-color: white; /* Clean white drawer often looks better, or keep dark if preferred. Sticking to design usually implies light or consistent. Let's use var(--color-bg-header) for consistency or white. Design usually has white drawer if mobile menu. Let's stick to existing dark theme for consistency with header unless specified. */
+  background-color: var(--color-bg-header); 
+  z-index: 101;
+  padding: 24px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+  transform: translateX(0); /* Animation state could be added */
+}
+
+.nav-drawer ul {
+  list-style: none;
+  margin: 60px 0 0 0; /* Space for close button if we added one, or just top spacing */
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.nav-drawer a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 500;
+  display: block;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-drawer a:hover {
+  color: var(--color-accent);
+  padding-left: 8px;
+  transition: all 0.2s;
+}
+.nav-drawer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-drawer a {
+  display: block;
+  padding: 12px 0;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-drawer a:hover {
+  text-decoration: underline;
+}
+
+
+main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+
+.hero {
+  background-color: var(--color-hero-bg);
+  color: white;
+  padding: 32px 24px;
+  border-radius: 8px;
+  margin-bottom: 32px;
+}
+
+.hero h1 {
+  margin: 0 0 4px 0;
+  font-size: 2rem;
+  color: var(--color-accent);
+}
+
+.hero .hero-location {
+  margin: 0 0 16px 0;
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.hero .hero-desc {
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+  max-width: 32em;
+}
+
+.hero .hero-cta {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--color-accent);
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+.hero .hero-cta:hover {
+  opacity: 0.95;
+}
+
+.hero-desktop {
+  display: block;
+}
+
+.hero-image-wrap {
+  margin-top: 20px;
+}
+
+.hero-image {
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+  .hero-desktop {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+    padding: 48px 32px;
+  }
+
+  .hero-image-wrap {
+    margin-top: 0;
+  }
+
+  .hero-image {
+    max-height: 320px;
+  }
+}
+
+
+.specials {
+  margin-bottom: 48px;
+}
+
+.specials-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.specials-head h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--color-text);
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--color-accent);
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  opacity: 0.95;
+}
+
+.specials-grid {
+  display: grid;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .specials-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.specials-card {
+  background: var(--color-footer-bg);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.specials-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.specials-card-body {
+  padding: 16px;
+}
+
+.specials-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.specials-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.specials-price {
+  color: #EF966A;
+  font-weight: 600;
+}
+
+.specials-card p {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.btn-delivery {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--color-accent);
+  color: var(--color-text);
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: opacity 0.2s;
+}
+
+.btn-delivery:hover {
+  opacity: 0.95;
+}
+
+
+.testimonials {
+  margin-bottom: 48px;
+}
+
+.testimonials h2 {
+  margin: 0 0 24px 0;
+  font-size: 1.75rem;
+  color: var(--color-text);
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.testimonials-grid {
+  display: grid;
+  gap: 24px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@media (min-width: 768px) {
+  .testimonials-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-.App-header {
-  background-color: #282c34;
+.testimonial-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.testimonial-stars {
+  color: var(--color-accent);
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.testimonial-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.testimonial-name {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.testimonial-quote {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+
+.site-footer {
+  background: var(--color-footer-bg);
+  padding: 32px 16px 16px;
+  margin-top: auto;
+}
+
+.footer-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.footer-col h4 {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.footer-col p {
+  margin: 0 0 4px 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.footer-col a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.footer-col a:hover {
+  text-decoration: underline;
+}
+
+.footer-copy {
+  max-width: 1200px;
+  margin: 24px auto 0;
+  padding-top: 16px;
+  text-align: center;
+}
+
+.footer-copy hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin-bottom: 12px;
+}
+
+.footer-copy p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+
+.booking-form {
+  display: grid;
+  gap: 20px;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 100%; /* Make inputs fill the container */
+  box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--color-accent);
+  outline: 2px solid rgba(244, 206, 20, 0.5);
+}
+
+.form-error {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+.form-error-summary {
+  padding: 12px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  border: 1px solid #ffcdd2;
+}
+
+
+main {
   display: flex;
   flex-direction: column;
+  align-items: center; /* Center the form on the page */
+}
+
+main > h1 {
+  color: var(--color-hero-bg);
+  margin-bottom: 8px;
+}
+
+main > p {
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 24px;
+}
+
+
+.confirmed-booking {
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  min-height: 60vh;
 }
 
-.App-link {
-  color: #61dafb;
+.confirmation-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.confirmation-card h1 {
+  color: var(--color-hero-bg);
+  margin-bottom: 16px;
+}
+
+.confirmation-card p {
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.confirmation-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.btn-secondary {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: transparent;
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background-color: #f5f5f5;
+  border-color: #bbb;
 }

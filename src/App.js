@@ -1,17 +1,11 @@
 import { useReducer } from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
+import Header from './components/Header';
+import HomePage from './components/HomePage';
 import BookingPage from './components/BookingPage';
 import ConfirmedBooking from './components/ConfirmedBooking';
 import { initializeTimes, updateTimes } from './reducers/bookingTimesReducer';
-
-function HomePage() {
-  return (
-    <main>
-      <p>Welcome to Little Lemon. Reserve a table from the navigation.</p>
-    </main>
-  );
-}
 
 function App() {
   const navigate = useNavigate();
@@ -22,49 +16,25 @@ function App() {
   );
 
   function submitForm(formData) {
-    const success =
-      typeof window !== 'undefined' &&
-      window.submitAPI &&
-      window.submitAPI(formData);
+    let success = true;
+    if (typeof window !== 'undefined' && window.submitAPI) {
+      success = window.submitAPI(formData);
+    }
+    
     if (success) {
       navigate('/booking-confirmed');
     }
-    return Boolean(success);
+    return success;
   }
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Little Lemon</h1>
-        <nav aria-label="Main navigation">
-          <ul>
-            <li>
-              <Link to="/" aria-label="Go to home">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" aria-label="Go to About Us">
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link to="/blog" aria-label="Go to Blog">
-                Blog
-              </Link>
-            </li>
-            <li>
-              <Link to="/booking" aria-label="Go to Reservations">
-                Reservations
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
+      <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<main><h2>About Us</h2></main>} />
-        <Route path="/blog" element={<main><h2>Blog</h2></main>} />
+        <Route path="/about" element={<main><h2>About</h2></main>} />
+        <Route path="/menu" element={<main><h2>Menu</h2><p>Online menu coming soon.</p></main>} />
+        <Route path="/order" element={<main><h2>Order Online</h2><p>Ordering coming soon.</p></main>} />
         <Route
           path="/booking"
           element={
