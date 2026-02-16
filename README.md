@@ -22,7 +22,7 @@ This is the front-end capstone project for the Meta Front-End Developer Professi
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/little-lemon-web.git
+    git clone https://github.com/hudchew/little-lemon-web.git
     cd little-lemon-web
     ```
 
